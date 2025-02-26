@@ -56,8 +56,16 @@ const uiManager = {
 
   // Set up event listeners for game UI elements
   setupGameEventListeners: function() {
-    document.getElementById('edit-mode-btn').addEventListener('click', () => modeManager.setMode('edit'));
-    document.getElementById('calculate-mode-btn').addEventListener('click', () => modeManager.setMode('calculate'));
+    document.getElementById('edit-mode-btn').addEventListener('click', () => {
+      modeManager.setMode('edit');
+      document.getElementById('game-container').classList.add('edit-mode');
+      document.getElementById('game-container').classList.remove('calculate-mode');
+    });
+    document.getElementById('calculate-mode-btn').addEventListener('click', () => {
+      modeManager.setMode('calculate');
+      document.getElementById('game-container').classList.add('calculate-mode');
+      document.getElementById('game-container').classList.remove('edit-mode');
+    });
     document.getElementById('reset-btn').addEventListener('click', () => gameState.resetSelection());
     document.getElementById('next-level-btn').addEventListener('click', () => {
       levelManager.loadLevel(gameState.level + 1);

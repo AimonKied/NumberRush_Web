@@ -2,11 +2,12 @@
 const menuManager = {
     // Render the main menu
     renderMainMenu: function() {
+      const highestPlayableLevel = gameState.maxUnlockedLevel;
       document.getElementById('app-container').innerHTML = `
         <div class="menu-container">
           <h1 class="menu-title">NumberRush</h1>
           <div class="menu-buttons">
-            <button id="play-btn" class="menu-button">Play</button>
+            <button id="play-btn" class="menu-button">Play (Level ${highestPlayableLevel})</button>
             <button id="levels-btn" class="menu-button">Levels</button>
             <button id="settings-btn" class="menu-button">Settings</button>
           </div>
@@ -15,8 +16,8 @@ const menuManager = {
       
       // Add event listeners
       document.getElementById('play-btn').addEventListener('click', () => {
-        // Start with the current or first level
-        levelManager.loadLevel(gameState.level);
+        // Start with the highest playable level
+        levelManager.loadLevel(highestPlayableLevel);
         gameState.currentView = 'game';
         uiManager.initUI();
         gameGridManager.loadGrid();

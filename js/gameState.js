@@ -20,6 +20,14 @@ const gameState = {
     cellBorderColor: '#cccccc', // Cell border color
     numberColor: '#333333',  // Number color
     selectedCellColor: '#b3e0ff', // Selected cell color
+    editCellBgColor: '#f0f0f0', // Edit mode cell background color
+    editCellBorderColor: '#cccccc', // Edit mode cell border color
+    editNumberColor: '#333333', // Edit mode number color
+    editSelectedCellColor: '#b3e0ff', // Edit mode selected cell color
+    calculateCellBgColor: '#e0f7fa', // Calculate mode cell background color
+    calculateCellBorderColor: '#80deea', // Calculate mode cell border color
+    calculateNumberColor: '#00796b', // Calculate mode number color
+    calculateSelectedCellColor: '#4dd0e1' // Calculate mode selected cell color
   },
   
   // Current view
@@ -131,6 +139,14 @@ const gameState = {
     document.documentElement.style.setProperty('--cell-hover-color', this.adjustColor(this.settings.cellBgColor, -10));
     document.documentElement.style.setProperty('--number-color', this.settings.numberColor);
     document.documentElement.style.setProperty('--selected-cell-color', this.settings.selectedCellColor);
+    document.documentElement.style.setProperty('--edit-cell-bg-color', this.settings.editCellBgColor);
+    document.documentElement.style.setProperty('--edit-cell-border-color', this.settings.editCellBorderColor);
+    document.documentElement.style.setProperty('--edit-number-color', this.settings.editNumberColor);
+    document.documentElement.style.setProperty('--edit-selected-cell-color', this.settings.editSelectedCellColor);
+    document.documentElement.style.setProperty('--calculate-cell-bg-color', this.settings.calculateCellBgColor);
+    document.documentElement.style.setProperty('--calculate-cell-border-color', this.settings.calculateCellBorderColor);
+    document.documentElement.style.setProperty('--calculate-number-color', this.settings.calculateNumberColor);
+    document.documentElement.style.setProperty('--calculate-selected-cell-color', this.settings.calculateSelectedCellColor);
   },
   
   // Helper to darken/lighten a color

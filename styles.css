@@ -143,13 +143,12 @@ body {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
-  gap: 2px;
+  gap: 6px; /* Ensure equal spacing between rows and columns */
   margin: 20px 0;
 }
 
 .grid-cell {
-  width: 40px;
-  height: 40px;
+  aspect-ratio: 1 / 1; /* Ensure cells are square */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -168,6 +167,38 @@ body {
 .grid-cell.selected {
   background-color: var(--selected-cell-color, #b3e0ff);
   border-color: var(--accent-color, #0080ff);
+}
+
+/* Edit Mode Styles */
+.edit-mode .grid-cell {
+  background-color: var(--edit-cell-bg-color, #f0f0f0);
+  border-color: var(--edit-cell-border-color, #ccc);
+  color: var(--edit-number-color, #333);
+}
+
+.edit-mode .grid-cell:hover {
+  background-color: var(--edit-cell-hover-color, #e0e0e0);
+}
+
+.edit-mode .grid-cell.selected {
+  background-color: var(--edit-selected-cell-color, #b3e0ff);
+  border-color: var(--edit-accent-color, #0080ff);
+}
+
+/* Calculate Mode Styles */
+.calculate-mode .grid-cell {
+  background-color: var(--calculate-cell-bg-color, #e0f7fa);
+  border-color: var(--calculate-cell-border-color, #80deea);
+  color: var(--calculate-number-color, #00796b);
+}
+
+.calculate-mode .grid-cell:hover {
+  background-color: var(--calculate-cell-hover-color, #b2ebf2);
+}
+
+.calculate-mode .grid-cell.selected {
+  background-color: var(--calculate-selected-cell-color, #4dd0e1);
+  border-color: var(--calculate-accent-color, #00796b);
 }
 
 .action-buttons {

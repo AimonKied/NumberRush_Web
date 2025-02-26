@@ -42,6 +42,46 @@ const settingsManager = {
             </div>
           </div>
           
+          <div class="settings-group">
+            <h3>Edit Mode Colors</h3>
+            <div class="color-option">
+              <label for="edit-cell-bg-color">Edit Cell Background:</label>
+              <input type="color" id="edit-cell-bg-color" value="${gameState.settings.editCellBgColor}">
+            </div>
+            <div class="color-option">
+              <label for="edit-cell-border-color">Edit Cell Border:</label>
+              <input type="color" id="edit-cell-border-color" value="${gameState.settings.editCellBorderColor}">
+            </div>
+            <div class="color-option">
+              <label for="edit-number-color">Edit Number Color:</label>
+              <input type="color" id="edit-number-color" value="${gameState.settings.editNumberColor}">
+            </div>
+            <div class="color-option">
+              <label for="edit-selected-cell-color">Edit Selected Cell Color:</label>
+              <input type="color" id="edit-selected-cell-color" value="${gameState.settings.editSelectedCellColor}">
+            </div>
+          </div>
+          
+          <div class="settings-group">
+            <h3>Calculate Mode Colors</h3>
+            <div class="color-option">
+              <label for="calculate-cell-bg-color">Calculate Cell Background:</label>
+              <input type="color" id="calculate-cell-bg-color" value="${gameState.settings.calculateCellBgColor}">
+            </div>
+            <div class="color-option">
+              <label for="calculate-cell-border-color">Calculate Cell Border:</label>
+              <input type="color" id="calculate-cell-border-color" value="${gameState.settings.calculateCellBorderColor}">
+            </div>
+            <div class="color-option">
+              <label for="calculate-number-color">Calculate Number Color:</label>
+              <input type="color" id="calculate-number-color" value="${gameState.settings.calculateNumberColor}">
+            </div>
+            <div class="color-option">
+              <label for="calculate-selected-cell-color">Calculate Selected Cell Color:</label>
+              <input type="color" id="calculate-selected-cell-color" value="${gameState.settings.calculateSelectedCellColor}">
+            </div>
+          </div>
+          
           <div class="action-buttons">
             <button id="settings-back-btn">Back</button>
             <button id="reset-settings-btn">Reset to Default</button>
@@ -77,7 +117,15 @@ const settingsManager = {
         { id: 'cell-bg-color', property: 'cellBgColor', cssVar: '--cell-bg-color' },
         { id: 'cell-border-color', property: 'cellBorderColor', cssVar: '--cell-border-color' },
         { id: 'number-color', property: 'numberColor', cssVar: '--number-color' },
-        { id: 'selected-cell-color', property: 'selectedCellColor', cssVar: '--selected-cell-color' }
+        { id: 'selected-cell-color', property: 'selectedCellColor', cssVar: '--selected-cell-color' },
+        { id: 'edit-cell-bg-color', property: 'editCellBgColor', cssVar: '--edit-cell-bg-color' },
+        { id: 'edit-cell-border-color', property: 'editCellBorderColor', cssVar: '--edit-cell-border-color' },
+        { id: 'edit-number-color', property: 'editNumberColor', cssVar: '--edit-number-color' },
+        { id: 'edit-selected-cell-color', property: 'editSelectedCellColor', cssVar: '--edit-selected-cell-color' },
+        { id: 'calculate-cell-bg-color', property: 'calculateCellBgColor', cssVar: '--calculate-cell-bg-color' },
+        { id: 'calculate-cell-border-color', property: 'calculateCellBorderColor', cssVar: '--calculate-cell-border-color' },
+        { id: 'calculate-number-color', property: 'calculateNumberColor', cssVar: '--calculate-number-color' },
+        { id: 'calculate-selected-cell-color', property: 'calculateSelectedCellColor', cssVar: '--calculate-selected-cell-color' }
       ];
       
       colorInputs.forEach(input => {
@@ -110,6 +158,14 @@ const settingsManager = {
       gameState.settings.cellBorderColor = document.getElementById('cell-border-color').value;
       gameState.settings.numberColor = document.getElementById('number-color').value;
       gameState.settings.selectedCellColor = document.getElementById('selected-cell-color').value;
+      gameState.settings.editCellBgColor = document.getElementById('edit-cell-bg-color').value;
+      gameState.settings.editCellBorderColor = document.getElementById('edit-cell-border-color').value;
+      gameState.settings.editNumberColor = document.getElementById('edit-number-color').value;
+      gameState.settings.editSelectedCellColor = document.getElementById('edit-selected-cell-color').value;
+      gameState.settings.calculateCellBgColor = document.getElementById('calculate-cell-bg-color').value;
+      gameState.settings.calculateCellBorderColor = document.getElementById('calculate-cell-border-color').value;
+      gameState.settings.calculateNumberColor = document.getElementById('calculate-number-color').value;
+      gameState.settings.calculateSelectedCellColor = document.getElementById('calculate-selected-cell-color').value;
       
       // Save to localStorage
       gameState.saveSettings();
@@ -131,7 +187,15 @@ const settingsManager = {
         cellBgColor: '#f0f0f0',
         cellBorderColor: '#cccccc',
         numberColor: '#333333',
-        selectedCellColor: '#b3e0ff'
+        selectedCellColor: '#b3e0ff',
+        editCellBgColor: '#ffffff',
+        editCellBorderColor: '#000000',
+        editNumberColor: '#000000',
+        editSelectedCellColor: '#ff0000',
+        calculateCellBgColor: '#ffffff',
+        calculateCellBorderColor: '#000000',
+        calculateNumberColor: '#000000',
+        calculateSelectedCellColor: '#00ff00'
       };
       
       // Update form values
@@ -142,6 +206,14 @@ const settingsManager = {
       document.getElementById('cell-border-color').value = defaultSettings.cellBorderColor;
       document.getElementById('number-color').value = defaultSettings.numberColor;
       document.getElementById('selected-cell-color').value = defaultSettings.selectedCellColor;
+      document.getElementById('edit-cell-bg-color').value = defaultSettings.editCellBgColor;
+      document.getElementById('edit-cell-border-color').value = defaultSettings.editCellBorderColor;
+      document.getElementById('edit-number-color').value = defaultSettings.editNumberColor;
+      document.getElementById('edit-selected-cell-color').value = defaultSettings.editSelectedCellColor;
+      document.getElementById('calculate-cell-bg-color').value = defaultSettings.calculateCellBgColor;
+      document.getElementById('calculate-cell-border-color').value = defaultSettings.calculateCellBorderColor;
+      document.getElementById('calculate-number-color').value = defaultSettings.calculateNumberColor;
+      document.getElementById('calculate-selected-cell-color').value = defaultSettings.calculateSelectedCellColor;
       
       // Apply to preview
       document.documentElement.style.setProperty('--bg-color', defaultSettings.bgColor);
@@ -153,5 +225,13 @@ const settingsManager = {
       document.documentElement.style.setProperty('--cell-hover-color', gameState.adjustColor(defaultSettings.cellBgColor, -10));
       document.documentElement.style.setProperty('--number-color', defaultSettings.numberColor);
       document.documentElement.style.setProperty('--selected-cell-color', defaultSettings.selectedCellColor);
+      document.documentElement.style.setProperty('--edit-cell-bg-color', defaultSettings.editCellBgColor);
+      document.documentElement.style.setProperty('--edit-cell-border-color', defaultSettings.editCellBorderColor);
+      document.documentElement.style.setProperty('--edit-number-color', defaultSettings.editNumberColor);
+      document.documentElement.style.setProperty('--edit-selected-cell-color', defaultSettings.editSelectedCellColor);
+      document.documentElement.style.setProperty('--calculate-cell-bg-color', defaultSettings.calculateCellBgColor);
+      document.documentElement.style.setProperty('--calculate-cell-border-color', defaultSettings.calculateCellBorderColor);
+      document.documentElement.style.setProperty('--calculate-number-color', defaultSettings.calculateNumberColor);
+      document.documentElement.style.setProperty('--calculate-selected-cell-color', defaultSettings.calculateSelectedCellColor);
     }
   };
