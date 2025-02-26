@@ -1,14 +1,11 @@
 // Main entry point for the game
 function initGame() {
-    // Initialize UI components
-    uiManager.initUI();
-    
-    // Create the grid
-    gridManager.createGrid();
-    
-    // Load the first level
-    levelManager.loadLevel(gameState.level);
-  }
+  // Initialize game state
+  gameState.init();
   
-  // Start the game when the page is loaded
-  document.addEventListener('DOMContentLoaded', initGame);
+  // Initialize UI based on current view
+  uiManager.initUI();
+}
+
+// Start the game when the page is loaded
+document.addEventListener('DOMContentLoaded', initGame);
