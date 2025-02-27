@@ -7,6 +7,8 @@ const gameState = {
   level: 1,                  // Current level
   selectedCells: [],         // Currently selected cells for calculation
   runningSum: 0,             // Current sum of selected cells
+  currentOperation: '+',     // Current selected operation (+, -, *, /)
+  maxOperands: 2,            // Maximum number of operands allowed (updated based on level)
   
   // Game progress
   maxUnlockedLevel: 1,       // Highest level unlocked
@@ -58,6 +60,12 @@ const gameState = {
   
   // Add a cell to selection
   selectCell: function(row, col) {
+    // Check if we've reached the maximum number of operands
+    if (this.selectedCells.length >= this.maxOperands) {
+      uiManager.showMessage(`Maximum of ${this.maxOperands} numbers allowed for level ${this.level}`);
+      return false;
+    }
+    
     this.selectedCells.push({row, col});
     
     // Update visual appearance
@@ -67,10 +75,57 @@ const gameState = {
         cell.classList.add('selected');
       }
     });
+    
+    return true;
+  },
+  
+  // Apply the current operation to update the running sum
+  applyOperation: function(value) {
+    if (this.selectedCells.length === 1) {
+      // First number just becomes the running sum
+      this.runningSum = value;
+    } else {
+      // Apply the operation based on the current selected operation
+      switch(this.currentOperation) {
+        case '+':
+          this.runningSum += value;
+          break;
+        case '-':
+          this.runningSum -= value;
+          break;
+        case '*':
+          this.runningSum *= value;
+          break;
+        case '/':
+          // Check for division by zero
+          if (value === 0) {
+            uiManager.showMessage('Cannot divide by zero!');
+            return false;
+          }
+          // Round to 2 decimal places to prevent floating point issues
+          this.runningSum = Math.round((this.runningSum / value) * 100) / 100;
+          break;
+      }
+    }
+    
+    uiManager.updateRunningSum();
+    return true;
+  },
+  
+  // Set the current operation
+  setOperation: function(op) {
+    this.currentOperation = op;
+    uiManager.updateOperationButtons(op);
+    uiManager.showMessage(`Operation set to ${op}`);
   },
   
   // Check if target sum is reached
   checkTargetSum: function() {
+    // Check if we've used the required number of operands
+    if (this.selectedCells.length < this.maxOperands) {
+      return false;
+    }
+    
     if (this.runningSum === this.targetSum) {
       uiManager.showMessage('Great job! You reached the target sum!');
       document.getElementById('next-level-btn').disabled = false;
@@ -82,8 +137,8 @@ const gameState = {
       }
       
       return true;
-    } else if (this.runningSum > this.targetSum) {
-      uiManager.showMessage('Sum exceeded! Try different numbers.');
+    } else if (this.runningSum !== this.targetSum && this.selectedCells.length >= this.maxOperands) {
+      uiManager.showMessage(`Target not reached. Try different numbers or operations.`);
       setTimeout(() => this.resetSelection(), 1500);
       return false;
     }

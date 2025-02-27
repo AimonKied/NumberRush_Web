@@ -84,13 +84,25 @@ const gridManager = {
         return;
       }
       
-      // Select the cell and update the sum
-      gameState.selectCell(row, col);
-      gameState.runningSum += gameState.grid[row][col];
-      uiManager.updateRunningSum();
-      
-      // Check if we reached the target sum
-      gameState.checkTargetSum();
+      // Select the cell and update the result using the current operation
+      if (gameState.selectCell(row, col)) {
+        const cellValue = gameState.grid[row][col];
+        
+        // Apply the operation
+        if (gameState.applyOperation(cellValue)) {
+          // Check if we reached the target sum
+          gameState.checkTargetSum();
+        } else {
+          // If operation failed (e.g., division by zero), unselect the cell
+          gameState.selectedCells.pop();
+          const cells = document.querySelectorAll('.grid-cell');
+          cells.forEach(cell => {
+            if (parseInt(cell.dataset.row) === row && parseInt(cell.dataset.col) === col) {
+              cell.classList.remove('selected');
+            }
+          });
+        }
+      }
     } else {
       uiManager.showMessage('You can only select neighboring cells');
     }

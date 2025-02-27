@@ -28,13 +28,21 @@ const uiManager = {
           <div class="level-info">
             <span>Level: ${gameState.level}</span>
             <span>Target Sum: ${gameState.targetSum}</span>
+            <span>Max Numbers: ${gameState.maxOperands}</span>
           </div>
           <div class="mode-controls">
             <button id="edit-mode-btn" class="active">Edit Mode</button>
             <button id="calculate-mode-btn">Calculate Mode</button>
           </div>
+          <div id="operation-controls" class="operation-controls" style="display:none;">
+            <span>Operation:</span>
+            <button id="add-op-btn" class="op-btn active">+</button>
+            <button id="subtract-op-btn" class="op-btn">-</button>
+            <button id="multiply-op-btn" class="op-btn">*</button>
+            <button id="divide-op-btn" class="op-btn">/</button>
+          </div>
           <div class="status">
-            <span id="running-sum">Current Sum: ${gameState.runningSum}</span>
+            <span id="running-sum">Current Result: ${gameState.runningSum}</span>
             <span id="status-message"></span>
           </div>
         </div>
@@ -60,12 +68,16 @@ const uiManager = {
       modeManager.setMode('edit');
       document.getElementById('game-container').classList.add('edit-mode');
       document.getElementById('game-container').classList.remove('calculate-mode');
+      document.getElementById('operation-controls').style.display = 'none';
     });
+    
     document.getElementById('calculate-mode-btn').addEventListener('click', () => {
       modeManager.setMode('calculate');
       document.getElementById('game-container').classList.add('calculate-mode');
       document.getElementById('game-container').classList.remove('edit-mode');
+      document.getElementById('operation-controls').style.display = 'flex';
     });
+    
     document.getElementById('reset-btn').addEventListener('click', () => gameState.resetSelection());
     document.getElementById('next-level-btn').addEventListener('click', () => {
       levelManager.loadLevel(gameState.level + 1);
@@ -76,6 +88,12 @@ const uiManager = {
       gameState.currentView = 'menu';
       this.initUI();
     });
+    
+    // Add event listeners for operation buttons
+    document.getElementById('add-op-btn').addEventListener('click', () => gameState.setOperation('+'));
+    document.getElementById('subtract-op-btn').addEventListener('click', () => gameState.setOperation('-'));
+    document.getElementById('multiply-op-btn').addEventListener('click', () => gameState.setOperation('*'));
+    document.getElementById('divide-op-btn').addEventListener('click', () => gameState.setOperation('/'));
   },
 
   // Display a message in the status area
@@ -97,7 +115,7 @@ const uiManager = {
   updateRunningSum: function() {
     const runningSum = document.getElementById('running-sum');
     if (runningSum) {
-      runningSum.textContent = `Current Sum: ${gameState.runningSum}`;
+      runningSum.textContent = `Current Result: ${gameState.runningSum}`;
     }
   },
 
@@ -105,8 +123,11 @@ const uiManager = {
   updateLevelInfo: function() {
     const levelInfo = document.querySelector('.level-info');
     if (levelInfo) {
-      levelInfo.querySelector('span:first-child').textContent = `Level: ${gameState.level}`;
-      levelInfo.querySelector('span:last-child').textContent = `Target Sum: ${gameState.targetSum}`;
+      levelInfo.innerHTML = `
+        <span>Level: ${gameState.level}</span>
+        <span>Target Sum: ${gameState.targetSum}</span>
+        <span>Max Numbers: ${gameState.maxOperands}</span>
+      `;
       
       const nextLevelBtn = document.getElementById('next-level-btn');
       if (nextLevelBtn) {
@@ -123,6 +144,27 @@ const uiManager = {
     if (editButton && calculateButton) {
       editButton.classList.toggle('active', mode === 'edit');
       calculateButton.classList.toggle('active', mode === 'calculate');
+      
+      // Show/hide operation controls based on mode
+      const operationControls = document.getElementById('operation-controls');
+      if (operationControls) {
+        operationControls.style.display = mode === 'calculate' ? 'flex' : 'none';
+      }
+    }
+  },
+  
+  // Update operation button appearance
+  updateOperationButtons: function(operation) {
+    const addButton = document.getElementById('add-op-btn');
+    const subtractButton = document.getElementById('subtract-op-btn');
+    const multiplyButton = document.getElementById('multiply-op-btn');
+    const divideButton = document.getElementById('divide-op-btn');
+    
+    if (addButton && subtractButton && multiplyButton && divideButton) {
+      addButton.classList.toggle('active', operation === '+');
+      subtractButton.classList.toggle('active', operation === '-');
+      multiplyButton.classList.toggle('active', operation === '*');
+      divideButton.classList.toggle('active', operation === '/');
     }
   },
   
