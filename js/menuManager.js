@@ -17,10 +17,9 @@ const menuManager = {
       // Add event listeners
       document.getElementById('play-btn').addEventListener('click', () => {
         // Start with the highest playable level
-        levelManager.loadLevel(highestPlayableLevel);
         gameState.currentView = 'game';
         uiManager.initUI();
-        gameGridManager.loadGrid();
+        levelManager.loadLevel(highestPlayableLevel);
       });
       
       document.getElementById('levels-btn').addEventListener('click', () => {
@@ -65,10 +64,9 @@ const menuManager = {
       // Add event listeners for levels
       for (let i = 1; i <= gameState.maxUnlockedLevel; i++) {
         document.getElementById(`level-${i}`).addEventListener('click', () => {
-          levelManager.loadLevel(i);
           gameState.currentView = 'game';
           uiManager.initUI();
-          gameGridManager.loadGrid();
+          levelManager.loadLevel(i);
         });
       }
       
