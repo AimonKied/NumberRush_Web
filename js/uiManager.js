@@ -34,12 +34,18 @@ const uiManager = {
             <button id="edit-mode-btn" class="active">Edit Mode</button>
             <button id="calculate-mode-btn">Calculate Mode</button>
           </div>
-          <div id="operation-controls" class="operation-controls" style="display:none;">
-            <span>Operation:</span>
-            <button id="add-op-btn" class="op-btn active">+</button>
-            <button id="subtract-op-btn" class="op-btn">-</button>
-            <button id="multiply-op-btn" class="op-btn">*</button>
-            <button id="divide-op-btn" class="op-btn">/</button>
+          <div class="calculation-wrapper">
+            <div id="operation-controls" class="operation-controls">
+              <div class="op-btn" draggable="true" data-op="+">+</div>
+              <div class="op-btn" draggable="true" data-op="-">-</div>
+              <div class="op-btn" draggable="true" data-op="*">×</div>
+              <div class="op-btn" draggable="true" data-op="/">÷</div>
+            </div>
+            <div class="calculation-area">
+              <div id="calculation-slots" class="calculation-slots"></div>
+              <div class="equals-sign">=</div>
+              <div class="target-slot">${gameState.targetSum}</div>
+            </div>
           </div>
           <div class="status">
             <span id="running-sum">Current Result: ${gameState.runningSum}</span>
@@ -55,27 +61,26 @@ const uiManager = {
       </div>
     `;
 
-    // Set up event listeners
+    // Set up event listeners first
     this.setupGameEventListeners();
     
-    // Create the game grid
+    // Initialize grid ONLY ONCE
     gridManager.createGrid();
   },
 
   // Set up event listeners for game UI elements
   setupGameEventListeners: function() {
+    // Mode buttons
     document.getElementById('edit-mode-btn').addEventListener('click', () => {
       modeManager.setMode('edit');
       document.getElementById('game-container').classList.add('edit-mode');
       document.getElementById('game-container').classList.remove('calculate-mode');
-      document.getElementById('operation-controls').style.display = 'none';
     });
     
     document.getElementById('calculate-mode-btn').addEventListener('click', () => {
       modeManager.setMode('calculate');
       document.getElementById('game-container').classList.add('calculate-mode');
       document.getElementById('game-container').classList.remove('edit-mode');
-      document.getElementById('operation-controls').style.display = 'flex';
     });
     
     document.getElementById('reset-btn').addEventListener('click', () => gameState.resetSelection());
@@ -88,12 +93,16 @@ const uiManager = {
       gameState.currentView = 'menu';
       this.initUI();
     });
-    
-    // Add event listeners for operation buttons
-    document.getElementById('add-op-btn').addEventListener('click', () => gameState.setOperation('+'));
-    document.getElementById('subtract-op-btn').addEventListener('click', () => gameState.setOperation('-'));
-    document.getElementById('multiply-op-btn').addEventListener('click', () => gameState.setOperation('*'));
-    document.getElementById('divide-op-btn').addEventListener('click', () => gameState.setOperation('/'));
+
+    // Operation controls
+    const operators = document.querySelectorAll('.op-btn');
+    operators.forEach(op => {
+      op.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', op.dataset.op);
+      });
+    });
+
+    // Removed duplicate grid creation from here
   },
 
   // Display a message in the status area
@@ -172,5 +181,42 @@ const uiManager = {
   navigateTo: function(view) {
     gameState.currentView = view;
     this.initUI();
+  },
+
+  // Update the calculation slots display
+  updateCalculationSlots: function() {
+    const slotsContainer = document.getElementById('calculation-slots');
+    if (!slotsContainer) return;
+    
+    let html = '';
+    for (let i = 0; i < gameState.maxOperands; i++) {
+      // Add number slot (ohne target sum in leeren slots)
+      const slot = gameState.calculationSlots[i];
+      html += `
+        <div class="calc-slot number-slot ${slot ? 'filled' : 'empty'}" 
+             data-index="${i}">
+          ${slot ? slot.value : ''}
+        </div>`;
+      
+      // Add operator slot after each number except the last
+      if (i < gameState.maxOperands - 1) {
+        const op = gameState.operatorSlots[i];
+        html += `
+          <div class="calc-slot operator-slot ${op ? 'filled' : 'empty'}" 
+               data-index="${i}"
+               ondragover="event.preventDefault()"
+               ondrop="gameState.handleOperatorDrop(event, ${i})">
+            ${op || '?'}
+          </div>`;
+      }
+    }
+    
+    slotsContainer.innerHTML = html;
+    
+    // Update target sum in result slot
+    const targetSlot = document.querySelector('.target-slot');
+    if (targetSlot) {
+      targetSlot.textContent = gameState.targetSum;
+    }
   }
 };

@@ -3,7 +3,10 @@ const gridManager = {
   // Create the 8x8 grid
   createGrid: function() {
     const gridContainer = document.getElementById('grid-container');
+    if (!gridContainer) return; // Sicherheitscheck
+
     gridContainer.innerHTML = '';
+    gameState.grid = []; // Reset grid array
     
     for (let row = 0; row < 8; row++) {
       gameState.grid[row] = [];
@@ -14,8 +17,8 @@ const gridManager = {
         cell.dataset.row = row;
         cell.dataset.col = col;
         
-        // Generate random number for the cell
-        const number = Math.floor(Math.random() * 10);
+        // Generate random number (1-9 instead of 0-9)
+        const number = Math.floor(Math.random() * 9) + 1;
         gameState.grid[row][col] = number;
         
         cell.textContent = number;
@@ -70,41 +73,29 @@ const gridManager = {
 
   // Handle clicks in calculate mode
   handleCalculateModeClick: function(row, col) {
-    // If no cells selected yet, or if the current cell is a neighbor of the last selected cell
-    if (gameState.selectedCells.length === 0 || 
-        gameState.isNeighbor(
-          gameState.selectedCells[gameState.selectedCells.length - 1].row, 
-          gameState.selectedCells[gameState.selectedCells.length - 1].col, 
-          row, col
-        )) {
-      // Check if the cell is already selected
-      const alreadySelected = gameState.selectedCells.some(cell => cell.row === row && cell.col === col);
-      if (alreadySelected) {
-        uiManager.showMessage('This cell is already selected');
-        return;
-      }
-      
-      // Select the cell and update the result using the current operation
-      if (gameState.selectCell(row, col)) {
-        const cellValue = gameState.grid[row][col];
-        
-        // Apply the operation
-        if (gameState.applyOperation(cellValue)) {
-          // Check if we reached the target sum
-          gameState.checkTargetSum();
-        } else {
-          // If operation failed (e.g., division by zero), unselect the cell
-          gameState.selectedCells.pop();
-          const cells = document.querySelectorAll('.grid-cell');
-          cells.forEach(cell => {
-            if (parseInt(cell.dataset.row) === row && parseInt(cell.dataset.col) === col) {
-              cell.classList.remove('selected');
-            }
-          });
+    const cellValue = gameState.grid[row][col];
+    
+    // Check if this is the first number or if it's a neighbor of the last selected number
+    const lastSlot = gameState.calculationSlots.filter(slot => slot !== null).pop();
+    if (lastSlot && !gameState.isNeighbor(lastSlot.row, lastSlot.col, row, col)) {
+      uiManager.showMessage('You can only select neighboring numbers!');
+      return;
+    }
+    
+    // Add number to next empty slot
+    if (gameState.addNumberToSlot(row, col, cellValue)) {
+      // Highlight the cell
+      const cells = document.querySelectorAll('.grid-cell');
+      cells.forEach(cell => {
+        if (parseInt(cell.dataset.row) === row && parseInt(cell.dataset.col) === col) {
+          cell.classList.add('selected');
         }
-      }
+      });
+      
+      // Update the UI
+      uiManager.updateCalculationSlots();
     } else {
-      uiManager.showMessage('You can only select neighboring cells');
+      uiManager.showMessage('All calculation slots are filled. Reset to try again.');
     }
   },
 
